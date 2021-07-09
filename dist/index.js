@@ -2324,13 +2324,19 @@ class FTPSyncProvider {
             if (this.dryRun === false) {
                 try {
                     yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.remove(filePath); }));
-                    this.logger.verbose(`  file removed`);
-                    this.logger.verbose(`  completed`);
                 }
                 catch (e) {
-                    this.logger.standard("FTPError: 550 No such file or directory - skipping...");
+                    // this error is common when a file was deleted on the server directly
+                    if (e.code === types_1.ErrorCode.FileNotFoundOrNoAccess) {
+                        this.logger.standard("File not found or you don't have access to the file - skipping...");
+                    }
+                    else {
+                        throw e;
+                    }
                 }
             }
+            this.logger.verbose(`  file removed`);
+            this.logger.verbose(`  completed`);
         });
     }
     removeFolder(folderPath) {
@@ -2348,13 +2354,9 @@ class FTPSyncProvider {
                         yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.removeDir(path.folders.join("/") + "/"); }));
                     }
                     catch (e) {
-                        // this error is common when a file was deleted on the server directly
-                        if (e.code === types_1.ErrorCode.FileNotFoundOrNoAccess) {
-                            this.logger.standard("File not found or you don't have access to the file - skipping...");
-                        }
-                        else {
-                            throw e;
-                        }
+                        this.logger.all("Error when trying to delete folder - skipping...");
+                        this.logger.all("Code error: ");
+                        this.logger.all(e.code);
                     }
                 }
             }
