@@ -2324,42 +2324,44 @@ class FTPSyncProvider {
             if (this.dryRun === false) {
                 try {
                     yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.remove(filePath); }));
+                    this.logger.verbose(`  file removed`);
+                    this.logger.verbose(`  completed`);
                 }
                 catch (e) {
-                    // this error is common when a file was deleted on the server directly
-                    if (e.code === types_1.ErrorCode.FileNotFoundOrNoAccess) {
-                        this.logger.standard("File not found or you don't have access to the file - skipping...");
-                    }
-                    else {
-                        throw e;
-                    }
+                    this.logger.standard("FTPError: 550 No such file or directory - skipping...");
                 }
             }
-            this.logger.verbose(`  file removed`);
-            this.logger.verbose(`  completed`);
         });
     }
     removeFolder(folderPath) {
-        try {
-            var _a;
-            return __awaiter(this, void 0, void 0, function* () {
-                this.logger.all(`removing folder "${folderPath + "/"}"`);
-                const path = this.getFileBreadcrumbs(folderPath + "/");
-                if (path.folders === null) {
-                    this.logger.verbose(`  no need to change dir`);
-                }
-                else {
-                    this.logger.verbose(`  removing folder "${path.folders.join("/") + "/"}"`);
-                    if (this.dryRun === false) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.all(`removing folder "${folderPath + "/"}"`);
+            const path = this.getFileBreadcrumbs(folderPath + "/");
+            if (path.folders === null) {
+                this.logger.verbose(`  no need to change dir`);
+            }
+            else {
+                this.logger.verbose(`  removing folder "${path.folders.join("/") + "/"}"`);
+                if (this.dryRun === false) {
+                    try {
                         yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.removeDir(path.folders.join("/") + "/"); }));
                     }
+                    catch (e) {
+                        // this error is common when a file was deleted on the server directly
+                        if (e.code === types_1.ErrorCode.FileNotFoundOrNoAccess) {
+                            this.logger.standard("File not found or you don't have access to the file - skipping...");
+                        }
+                        else {
+                            throw e;
+                        }
+                    }
                 }
-                // navigate back to the root folder
-                yield this.upDir((_a = path.folders) === null || _a === void 0 ? void 0 : _a.length);
-                this.logger.verbose(`  completed`);
-            });
-        }
-        catch (error) {}
+            }
+            // navigate back to the root folder
+            yield this.upDir((_a = path.folders) === null || _a === void 0 ? void 0 : _a.length);
+            this.logger.verbose(`  completed`);
+        });
     }
     uploadFile(filePath, type = "upload") {
         return __awaiter(this, void 0, void 0, function* () {
