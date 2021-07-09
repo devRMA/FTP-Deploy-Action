@@ -1991,8 +1991,8 @@ function deploy(args, logger, timings) {
         logger.all(`🚀 Thanks for using ftp-deploy. Let's deploy some stuff!   `);
         logger.all(`----------------------------------------------------------------`);
         logger.all(`If you found this project helpful, please support it`);
-        logger.all(`by giving it a ⭐ on Github --> https://github.com/SamKirkland/FTP-Deploy-Action`);
-        logger.all(`or add a badge 🏷️ to your projects readme --> https://github.com/SamKirkland/FTP-Deploy-Action#badge`);
+        logger.all(`by giving it a ⭐ on Github --> https://github.com/devrma/FTP-Deploy-Action`);
+        logger.all(`or add a badge 🏷️ to your projects readme --> https://github.com/devrma/FTP-Deploy-Action#badge`);
         logger.verbose(`Using the following excludes filters: ${JSON.stringify(args.exclude)}`);
         timings.start("hash");
         const localFiles = yield localFiles_1.getLocalFiles(args);
@@ -2340,23 +2340,26 @@ class FTPSyncProvider {
         });
     }
     removeFolder(folderPath) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            this.logger.all(`removing folder "${folderPath + "/"}"`);
-            const path = this.getFileBreadcrumbs(folderPath + "/");
-            if (path.folders === null) {
-                this.logger.verbose(`  no need to change dir`);
-            }
-            else {
-                this.logger.verbose(`  removing folder "${path.folders.join("/") + "/"}"`);
-                if (this.dryRun === false) {
-                    yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.removeDir(path.folders.join("/") + "/"); }));
+        try {
+            var _a;
+            return __awaiter(this, void 0, void 0, function* () {
+                this.logger.all(`removing folder "${folderPath + "/"}"`);
+                const path = this.getFileBreadcrumbs(folderPath + "/");
+                if (path.folders === null) {
+                    this.logger.verbose(`  no need to change dir`);
                 }
-            }
-            // navigate back to the root folder
-            yield this.upDir((_a = path.folders) === null || _a === void 0 ? void 0 : _a.length);
-            this.logger.verbose(`  completed`);
-        });
+                else {
+                    this.logger.verbose(`  removing folder "${path.folders.join("/") + "/"}"`);
+                    if (this.dryRun === false) {
+                        yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.removeDir(path.folders.join("/") + "/"); }));
+                    }
+                }
+                // navigate back to the root folder
+                yield this.upDir((_a = path.folders) === null || _a === void 0 ? void 0 : _a.length);
+                this.logger.verbose(`  completed`);
+            });
+        }
+        catch (error) {}
     }
     uploadFile(filePath, type = "upload") {
         return __awaiter(this, void 0, void 0, function* () {
@@ -2418,7 +2421,7 @@ exports.FTPSyncProvider = FTPSyncProvider;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ErrorCode = exports.syncFileDescription = exports.currentSyncFileVersion = void 0;
 exports.currentSyncFileVersion = "1.0.0";
-exports.syncFileDescription = "DO NOT DELETE THIS FILE. This file is used to keep track of which files have been synced in the most recent deployment. If you delete this file a resync will need to be done (which can take a while) - read more: https://github.com/SamKirkland/FTP-Deploy-Action";
+exports.syncFileDescription = "DO NOT DELETE THIS FILE. This file is used to keep track of which files have been synced in the most recent deployment. If you delete this file a resync will need to be done (which can take a while) - read more: https://github.com/devrma/FTP-Deploy-Action";
 var ErrorCode;
 (function (ErrorCode) {
     // The requested action is being initiated, expect another reply before proceeding with a new command.
@@ -6851,7 +6854,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@samkirkland/ftp-deploy/dist/module.js
+// EXTERNAL MODULE: ./node_modules/@devrma/ftp-deploy/dist/module.js
 var dist_module = __nccwpck_require__(8347);
 ;// CONCATENATED MODULE: ./src/parse.ts
 function optionalString(rawValue) {
