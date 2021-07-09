@@ -2354,9 +2354,12 @@ class FTPSyncProvider {
                         yield utilities_1.retryRequest(this.logger, () => __awaiter(this, void 0, void 0, function* () { return yield this.client.removeDir(path.folders.join("/") + "/"); }));
                     }
                     catch (e) {
-                        this.logger.all("Error when trying to delete folder - skipping...");
-                        this.logger.all("Code error: ");
-                        this.logger.all(e.code);
+                        if (e.code == 550){
+                            this.logger.all("Error when trying to delete folder - skipping...");
+                        }
+                        else {
+                            throw e;
+                        }
                     }
                 }
             }
